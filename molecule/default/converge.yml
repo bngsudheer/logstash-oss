@@ -6,4 +6,4 @@
   tasks:
     - name: "Include logstash_oss"
       include_role:
-        name: "logstash-oss"
+        name: "bngsudheer.logstash-oss"
