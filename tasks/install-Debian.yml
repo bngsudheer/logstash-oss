@@ -1,0 +1,48 @@
+# See https://github.com/geerlingguy/ansible-role-java/issues/64
+- name: Ensure man directory exists
+  file:
+    path: /usr/share/man/man1/
+    state: directory
+  when:
+    - logstash_oss_install_java_11|bool
+
+- name: Debug
+  debug:
+    msg: "{{ ansible_distribution_version }}"
+
+- name: Install Java 11
+  apt:
+    name:
+      - openjdk-11-jre-headless
+    update_cache: true
+  when:
+    - logstash_oss_install_java_11|bool
+
+- name: Install dependencies
+  apt:
+    name:
+      - gpg-agent
+
+- name: Elastic Apt signing key
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  environment:
+    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE: 1
+  when: logstash_oss_elasticsearch_repository|bool
+
+- name: Apt HTTPS transport
+  apt:
+    name:
+      - apt-transport-https
+  when: logstash_oss_elasticsearch_repository|bool
+
+- name: Elasticsearch Apt repository
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/oss-{{ logstash_oss_version }}/apt stable main"
+  when: logstash_oss_elasticsearch_repository|bool
+
+- name: Logstash OSS
+  apt:
+    name:
+      - logstash-oss

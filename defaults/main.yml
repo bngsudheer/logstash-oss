@@ -1,0 +1,22 @@
+---
+# defaults file for logstash-oss
+logstash_oss_install_java_11: false
+
+logstash_oss_elasticsearch_repository: true
+logstash_oss_version: "7.x"
+
+logstash_beats_input: true
+logstash_beats_port: 5044
+logstash_local_ssl_certificate_file_path: ""
+logstash_local_ssl_key_file_path: ""
+logstash_ssl_private_directory: /etc/ssl/private
+logstash_ssl_certificate_directory: /etc/ssl/certs
+
+logstash_main_configuration:
+  path.data: /var/lib/logstash
+  pipeline.ordered: auto
+  path.logs: /var/log/logstash
+
+logstash_elasticsearch_output: true
+logstash_elasticsearch_hosts:
+  - http://localhost:9200

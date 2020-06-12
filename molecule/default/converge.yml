@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    logstash_oss_install_java_11: true
+  tasks:
+    - name: "Include logstash_oss"
+      include_role:
+        name: "logstash_oss"

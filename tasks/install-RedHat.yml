@@ -1,0 +1,26 @@
+- name: Install Java 11
+  yum:
+    name:
+      - java-11-openjdk
+  when: logstash_oss_install_java_11|bool
+
+- name: Import Elasticsearch RPM GPG key
+  rpm_key:
+    state: present
+    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  when: logstash_oss_elasticsearch_repository|bool
+
+- name: Elasticsearch repository
+  yum_repository:
+    name: "elasticsearch-oss-{{ logstash_oss_version }}"
+    description: "Elasticsearch repository for oss-{{ logstash_oss_version }} packages"
+    baseurl: https://artifacts.elastic.co/packages/oss-{{ logstash_oss_version }}/yum
+    gpgcheck: true
+    gpgkey: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+    enabled: true
+  when: logstash_oss_elasticsearch_repository|bool
+
+- name: Logstash OSS
+  yum:
+    name:
+      - logstash-oss

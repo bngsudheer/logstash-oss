@@ -1,0 +1,57 @@
+---
+# TODO
+# Tests
+# Logstash version configuration
+- name: Include OS Specific installation tasks
+  include: install-{{ ansible_os_family }}.yml
+
+- name: Logstash main configuration
+  template:
+    src: etc/logstash/logstash.yml.j2
+    dest: /etc/logstash/logstash.yml
+  notify: restart logstash
+
+- name: Ensure SSL key and certificate directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ logstash_ssl_private_directory }}"
+    - "{{ logstash_ssl_certificate_directory }}"
+  when: logstash_local_ssl_key_file_path | length > 0
+
+- name: Copy SSL key
+  copy:
+    src: "{{ logstash_local_ssl_key_file_path }}"
+    dest: "{{ logstash_ssl_private_directory }}/{{ logstash_local_ssl_key_file_path | basename }}"
+    mode: 0644
+  notify: restart logstash
+  when: logstash_local_ssl_key_file_path | length > 0
+
+- name: Copy SSL certificate
+  copy:
+    src: "{{ logstash_local_ssl_certificate_file_path }}"
+    dest: "{{ logstash_ssl_certificate_directory }}/{{ logstash_local_ssl_certificate_file_path| basename }}"
+    mode: 0644
+  notify: restart logstash
+  when: logstash_local_ssl_certificate_file_path | length > 0
+
+- name: Logstash beats input
+  template:
+    src: etc/logstash/conf.d/beats-input.conf
+    dest: /etc/logstash/conf.d
+  when: logstash_beats_input|bool
+  notify: restart logstash
+
+- name: Logstash Elasticsearch output
+  template:
+    src: etc/logstash/conf.d/elasticsearch-output.conf
+    dest: /etc/logstash/conf.d
+  when: logstash_elasticsearch_output|bool
+  notify: restart logstash
+
+- name: Start and enable Logstash OSS
+  systemd:
+    name: logstash
+    state: started
+    enabled: true
