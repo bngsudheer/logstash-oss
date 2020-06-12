@@ -59,19 +59,25 @@ logstash_ssl_certificate_directory: /etc/ssl/certs
 ```
 The directory to store SSL/TLS certificates.
 
+```yml
 logstash_main_configuration:
   path.data: /var/lib/logstash
   pipeline.ordered: auto
   path.logs: /var/log/logstash
+```
+The Logstash main configuration. This is a YAML dictionary.
 
+```yml
 logstash_elasticsearch_output: true
 logstash_elasticsearch_hosts:
   - http://localhost:9200
+```
+An Elasticsearch output is included. Disable it, if you do not want the output.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
@@ -80,14 +86,16 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - role: bngsudheer.logstash-oss
 
 License
 -------
 
-BSD
+Apache 2.0.
 
 Author Information
 ------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Sudheer Satyanarayana.
+* [Twitter](https://twitter.com/bngsudheer)
+* [GitHub](https://github.com/bngsudheer)
+* [Work](https://www.gavika.com/)
